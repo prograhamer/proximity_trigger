@@ -1,0 +1,5 @@
+A simple project to trigger the shutter on my Pentax SLR via the infrared
+remote control protocol when an attached distance sensor detects an object.
+
+This makes use of the ir_remote library stored in another repository by that
+name.
