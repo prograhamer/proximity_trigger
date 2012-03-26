@@ -1,9 +1,9 @@
 #include <ir_remote.h>
 
-// Sample frequency in usec
-#define SAMPLE_FREQ 1000
-// Number of samples required to trigger output
-#define N_SAMPLES 100
+// Sample frequency in ms
+#define SAMPLE_FREQ 38
+// Number of samples within range required to trigger output
+#define N_SAMPLES 13
 
 // Maximum shot frequency in ms
 #define SHOT_FREQ 5000
@@ -14,19 +14,16 @@
 #define PIN_INDICATOR (13)
 
 // Count of successive samples for which there has been a trigger signal
-uint16_t sample_i;
+uint16_t sample_i = 0;
 
 // Lower and upper bound to determine whether the input from the sensor should
 // trigger the shutter or not
-#define LOWER_BOUND (80)
+#define LOWER_BOUND (60)
 #define UPPER_BOUND (300)
 
 // Last trigger time, stored to enable imposing a limit on shutter activation
 // frequency
 unsigned long last_trigger_time;
-
-// State variable indicating whether the sensor is triggered
-uint8_t state = 0;
 
 // Infrared remote control interface object used to trigger the camera
 IrRemote remote;
@@ -44,6 +41,8 @@ const int pentax_exp[][2] =
 
 void setup()
 {
+  delayMicroseconds( 43000 );
+
   pinMode( PIN_SENSOR, INPUT );
   pinMode( PIN_INDICATOR, OUTPUT );
 
@@ -66,7 +65,8 @@ void loop()
       sample_i++;
     else
     {
-      state = 1;
+      sample_i = 0;
+
       digitalWrite( PIN_INDICATOR, HIGH );
 
       if( millis() - last_trigger_time >= SHOT_FREQ )
@@ -81,12 +81,8 @@ void loop()
   {
     sample_i = 0;
 
-    if( state )
-    {
-      digitalWrite( PIN_INDICATOR, LOW );
-      state = 0;
-    }
+    digitalWrite( PIN_INDICATOR, LOW );
   }
 
-  delayMicroseconds( SAMPLE_FREQ );
+  delay( SAMPLE_FREQ );
 }
