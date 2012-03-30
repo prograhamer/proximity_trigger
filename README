@@ -1,5 +1,15 @@
 A simple project to trigger the shutter on my Pentax SLR via the infrared
 remote control protocol when an attached distance sensor detects an object.
 
+There are two variants: one activates the shutter if an object is detected in
+a defined range between two distances; the second activates if the voltage out
+of the sensor changes by a certain amount between two sample passes (this is
+named with the suffix _delta).
+
+Currently neither variant does any conversion of output voltages from the sensor
+to distances. All thresholds etc. are expressed in terms of the values reported
+by analogRead(), i.e. the output voltage of the sensor, normalised to the
+voltage AREF (normally 5V) and expressed as a 10bit unsigned integer.
+
 This makes use of the ir_remote library stored in another repository by that
 name.
